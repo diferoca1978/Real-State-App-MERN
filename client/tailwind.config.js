@@ -9,6 +9,12 @@ module.exports = {
   ],
   prefix: '',
   theme: {
+    screens: {
+      sm: '576px',
+      md: '768px',
+      lg: '992',
+      xl: '1280px',
+    },
     container: {
       center: true,
       padding: '2rem',
@@ -18,7 +24,7 @@ module.exports = {
     },
     extend: {
       backgroundImage: {
-        customPattern: "url('/public/new-home.jpg')",
+        customPattern: "url('/new-home.jpg')",
       },
       colors: {
         border: 'hsl(var(--border))',

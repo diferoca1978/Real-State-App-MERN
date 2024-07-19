@@ -15,7 +15,7 @@ import { Separator } from '../components/ui/separator';
 export const NavBar = () => {
   return (
     <>
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
+      <header className="sticky top-0 w-full flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
         <div className="container mx-auto flex justify-between items-center md:p-0">
           <div>
             <NavLink
@@ -140,7 +140,7 @@ export const NavBar = () => {
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  `${isActive ? 'text-inherit' : 'text-inherit'}`
+                  `${isActive ? 'text-inherit' : ''}`
                 }
               >
                 About
@@ -149,7 +149,7 @@ export const NavBar = () => {
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
-                  `${isActive ? 'text-slate-50' : 'text-primary-foreground'}`
+                  `${isActive ? 'text-inherit' : ''}`
                 }
               >
                 Contact
@@ -157,7 +157,7 @@ export const NavBar = () => {
               <NavLink
                 to="/search"
                 className={({ isActive }) =>
-                  `${isActive ? 'text-slate-50' : 'text-primary-foreground'}`
+                  `${isActive ? 'text-inherit' : ''}`
                 }
               >
                 Search
