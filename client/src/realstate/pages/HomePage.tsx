@@ -4,11 +4,10 @@ import { Swiper } from '../components/Carousel';
 export const HomePage = () => {
   return (
     <>
-      <div className="min-h-screen bg-amber-50">
+      <div className="min-h-screen pb-10 bg-amber-50">
         {/* Top Section */}
-
-        <div className="relative h-screen bg-customPattern bg-cover bg-bottom bg-fixed">
-          <div className="absolute inset-0 bg-black/20 flex ">
+        <section className="relative h-screen mb-20 bg-customPattern bg-cover bg-center bg-fixed">
+          <div className="absolute inset-0 bg-black/20 flex">
             <div className="text-left p-3 space-y-5 md:p-12">
               <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
                 Agents,
@@ -26,15 +25,17 @@ export const HomePage = () => {
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Help Section */}
-        <div className="w-full py-12 px-4 bg-amber-50">
-          <h1 className="text-2xl font-extrabold tracking-tight mb-10 lg:text-5xl">
-            How we can help you?
-          </h1>
-          <div className="block space-y-5 md:flex md:justify-around md:space-y-0 md:gap-4">
-            <div className="relative shadow-lg rounded-lg">
+        <section className="grid gap-3 px-3 mb-20 md:gap-8 md:px-32 bg-amber-50">
+          <div className="text-3xl font-extrabold md:text-5xl">
+            <span className="bg-clip-text text-transparent bg-gradient-to-tr from-secondary-foreground to-muted">
+              How we can help you?
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="relative shadow-lg rounded-lg border border-primary">
               <img
                 className="rounded-lg brightness-75"
                 src="../../buy-home.jpg"
@@ -49,9 +50,9 @@ export const HomePage = () => {
                 </p>
               </div>
             </div>
-            <div className="relative shadow-lg rounded-lg">
+            <div className="relative shadow-lg rounded-lg border border-primary">
               <img
-                className="transition-all ease-out duration-500 rounded-lg brightness-50 hover:brightness-75"
+                className=" rounded-lg brightness-75"
                 src="../../rent-home.jpg"
                 alt="Buy"
               />
@@ -64,7 +65,7 @@ export const HomePage = () => {
                 </p>
               </div>
             </div>
-            <div className="relative shadow-lg rounded-lg">
+            <div className="relative shadow-lg rounded-lg border border-primary">
               <img
                 className="rounded-lg brightness-75"
                 src="../../sales.jpg"
@@ -80,21 +81,127 @@ export const HomePage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
         {/* Carousel */}
-        <div className="container md:justify-center ">
-          <Swiper />
-        </div>
-        {/* Listing results for offer, sale, rent */}
-        <div className="py-12 px-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Additional Content
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Here you can add more content below the image section. This content
-            will appear after the centered image and text.
-          </p>
-        </div>
+        <section className="grid gap-3 px-3 mb-20 md:gap-8 md:px-32 bg-amber-50">
+          <div className="text-3xl font-extrabold md:text-5xl">
+            <span className="bg-clip-text text-transparent bg-gradient-to-tr from-secondary-foreground to-muted">
+              Last properties plubished
+            </span>
+          </div>
+          <div className="container p-3">
+            <Swiper />
+          </div>
+        </section>
+
+        {/* Listing results for rent */}
+        <section className="grid gap-3 px-3 mb-20  md:gap-8 md:px-32">
+          <div className="text-3xl font-extrabold md:text-5xl">
+            <span className="bg-clip-text text-transparent bg-gradient-to-tr from-secondary-foreground to-muted">
+              Recent places for rent
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="rounded-lg overflow-hidden shadow-xl border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-xl  border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-xl border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-xl border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <NavLink to="#" className="font-semibold hover:underline">
+              Show more...
+            </NavLink>
+          </div>
+        </section>
+
+        {/* Listing results for sales */}
+        <section className="grid gap-3 px-3 md:gap-8 md:px-32">
+          <div className="text-3xl font-extrabold md:text-5xl">
+            <span className="bg-clip-text text-transparent bg-gradient-to-tr from-secondary-foreground to-muted">
+              Recent places for sale
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="rounded-lg overflow-hidden shadow-xl border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-xl  border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-xl border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg overflow-hidden shadow-xl border border-primary">
+              <img src="../../buy-home.jpg" alt="buy-home" className="w-full" />
+              <div className="px-6 py-4 ">
+                <p>
+                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                  Tempore nihil possimus facilis ex ullam eveniet eos debitis
+                  earum ipsa.
+                </p>
+              </div>
+            </div>
+            <NavLink to="#" className="font-semibold hover:underline">
+              Show more...
+            </NavLink>
+          </div>
+        </section>
       </div>
     </>
   );

@@ -25,6 +25,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         customPattern: "url('/new-home.jpg')",
+        aboutus: 'url(/family-new-home.jpg)',
       },
       colors: {
         border: 'hsl(var(--border))',

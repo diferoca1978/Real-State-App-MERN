@@ -5,7 +5,7 @@ import { Separator } from '../components/ui/separator';
 export const Footer = () => {
   return (
     <>
-      <footer className="bg-primary border-t py-4">
+      <footer className="bg-primary border border-t-secondary py-8">
         <div className="container grid grid-cols-1 gap-5 md:grid-cols-3">
           <div className="grid gap-4">
             <NavLink

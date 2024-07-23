@@ -15,7 +15,7 @@ import { Separator } from '../components/ui/separator';
 export const NavBar = () => {
   return (
     <>
-      <header className="sticky top-0 w-full flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
+      <header className="sticky z-10 top-0 w-full flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
         <div className="container mx-auto flex justify-between items-center md:p-0">
           <div>
             <NavLink

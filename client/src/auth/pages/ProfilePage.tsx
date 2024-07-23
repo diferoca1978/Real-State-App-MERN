@@ -120,7 +120,7 @@ export const ProfilePage = () => {
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Update
+                  Save
                 </Button>
                 <Button type="button" className="w-full">
                   <NavLink to="#">Create a new property</NavLink>
