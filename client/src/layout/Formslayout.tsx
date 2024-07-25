@@ -1,11 +1,11 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 interface FormsLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
 }
 
-export const FormsLayout: React.FC<FormsLayoutProps> = ({
+export const FormsLayout: React.FunctionComponent<FormsLayoutProps> = ({
   children,
   title,
 }) => {

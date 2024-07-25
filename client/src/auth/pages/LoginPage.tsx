@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -30,7 +32,7 @@ const formSchema = z.object({
     .min(1, { message: 'Email is required' }),
   password: z
     .string()
-    .min(3, { message: 'Password must be at least 3 characters' }),
+    .min(3, { message: 'Password must have at least 3 characters' }),
 });
 
 export const LoginPage = () => {

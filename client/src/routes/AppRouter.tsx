@@ -9,7 +9,12 @@ import {
   HomePage,
   SearchPage,
 } from '../realstate/pages';
-import { LoginPage, ProfilePage, RegisterPage } from '../auth/pages';
+import {
+  CreateListingsPage,
+  LoginPage,
+  ProfilePage,
+  RegisterPage,
+} from '../auth/pages';
 import { MainLayout } from '../layout/MainLayout';
 import { ErrorPage } from '../shared/ErrorPage';
 
@@ -30,6 +35,7 @@ export const router = createBrowserRouter(
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="createListing" element={<CreateListingsPage />} />
       </Route>
     </>
   )
