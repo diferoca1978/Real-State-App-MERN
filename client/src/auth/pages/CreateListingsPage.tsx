@@ -27,7 +27,7 @@ const formSchema = z.object({
   propertyname: z.string().optional(),
   neighborhood: z.string().min(1, { message: 'Neighborhood is required' }),
   address: z.string().min(1, { message: 'Address is required' }),
-  price: z.number({ required_error: ' Price is required' }),
+  price: z.string({ required_error: ' Price is required' }),
   description: z
     .string()
     .min(10, { message: 'Description must have at least 10 characters' })
@@ -60,7 +60,7 @@ export const CreateListingsPage = () => {
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    console.log({ data });
   };
 
   return (
@@ -184,8 +184,8 @@ export const CreateListingsPage = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="rent">Townhouse</SelectItem>
-                        <SelectItem value="sale">Apartament</SelectItem>
+                        <SelectItem value="rent">Rent</SelectItem>
+                        <SelectItem value="sale">Sale</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -285,6 +285,19 @@ export const CreateListingsPage = () => {
                       className="resize-y"
                       {...field}
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input type="file" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
