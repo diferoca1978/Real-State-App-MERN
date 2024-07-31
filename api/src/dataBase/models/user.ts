@@ -5,6 +5,7 @@ interface Iuser {
   email: string;
   password: string;
   avatar?: string;
+  roles: [];
 }
 
 const userSchema = new Schema<Iuser>({
@@ -27,6 +28,7 @@ const userSchema = new Schema<Iuser>({
   },
 
   avatar: String,
+  roles: [],
 });
 
 export const User = model<Iuser>('User', userSchema);
