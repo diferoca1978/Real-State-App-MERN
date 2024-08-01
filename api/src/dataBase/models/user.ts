@@ -8,27 +8,30 @@ interface Iuser {
   roles: [];
 }
 
-const userSchema = new Schema<Iuser>({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+const userSchema = new Schema<Iuser>(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
 
-  password: {
-    type: String,
-    required: true,
-    minLenght: 3,
-  },
+    password: {
+      type: String,
+      required: true,
+      minLenght: 3,
+    },
 
-  avatar: String,
-  roles: [],
-});
+    avatar: String,
+    roles: [],
+  },
+  { timestamps: true }
+);
 
 export const User = model<Iuser>('User', userSchema);

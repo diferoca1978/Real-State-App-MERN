@@ -110,3 +110,45 @@ export const renewToken = async (req: Request, res: Response) => {
     token,
   });
 };
+
+export const updateUser = async (req: Request, res: Response) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        message: 'User not found ❌',
+      });
+    }
+
+    if (userId !== req.uid) {
+      res.status(401).json({
+        ok: false,
+        message: 'Unauthorized to make changes 🙊',
+      });
+    }
+
+    const newUser = {
+      ...req.body,
+      user: req.uid,
+    };
+
+    const userUpdated = await User.findByIdAndUpdate(userId, newUser, {
+      new: true,
+    });
+
+    res.json({
+      ok: true,
+      user: userUpdated,
+    });
+  } catch (error) {
+    console.error({ error });
+    res.status(500).json({
+      ok: false,
+      msg: 'Contact with customer service',
+    });
+  }
+};
