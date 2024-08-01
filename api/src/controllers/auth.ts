@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../dataBase/models/user';
 import { generateJwt } from '../helpers/jwt';
+import { userInfo } from 'os';
 
 export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -22,7 +23,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const user = new User(req.body);
 
-    user.password = bcrypt.hashSync(password, 8);
+    user.password = bcrypt.hashSync(password, 5);
 
     await user.save();
 
@@ -113,6 +114,56 @@ export const renewToken = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const userId = req.params.id;
+  const uid = req.uid;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({
+        ok: false,
+        message: 'User not found ❌',
+      });
+    }
+
+    if (uid !== userId) {
+      res.status(401).json({
+        ok: false,
+        message: ' Unauthorized to make changes 🙊',
+      });
+    }
+
+    const newUser = {
+      ...req.body,
+      user: req.uid,
+    };
+
+    if (newUser.password) {
+      newUser.password = bcrypt.hashSync(newUser.password, 5);
+    }
+
+    const userUpdated = await User.findByIdAndUpdate(userId, newUser, {
+      new: true,
+    });
+
+    res.json({
+      ok: true,
+      message: 'Succcess 🚀 user updated',
+    });
+
+    console.log(newUser);
+  } catch (error) {
+    console.error({ error });
+    res.status(501).json({
+      ok: false,
+      message: 'Process not implemented',
+    });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  const userId = req.params.id;
+  const uid = req.uid;
 
   try {
     const user = await User.findById(userId);
@@ -124,31 +175,20 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    if (userId !== req.uid) {
+    if (uid !== userId) {
       res.status(401).json({
         ok: false,
-        message: 'Unauthorized to make changes 🙊',
+        message: 'Unauthorized to delete 🙊',
       });
     }
 
-    const newUser = {
-      ...req.body,
-      user: req.uid,
-    };
-
-    const userUpdated = await User.findByIdAndUpdate(userId, newUser, {
-      new: true,
-    });
+    await User.findByIdAndDelete(userId);
 
     res.json({
       ok: true,
-      user: userUpdated,
+      message: 'Succcess in delete process',
     });
   } catch (error) {
     console.error({ error });
-    res.status(500).json({
-      ok: false,
-      msg: 'Contact with customer service',
-    });
   }
 };

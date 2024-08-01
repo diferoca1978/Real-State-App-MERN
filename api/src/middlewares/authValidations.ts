@@ -2,6 +2,8 @@ import { check } from 'express-validator';
 import { fieldsErrors } from './handleErrors';
 
 export const registerValidations = [
+  check('avatar').optional(),
+
   check('name')
     .notEmpty()
     .withMessage('Name is required')

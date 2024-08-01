@@ -5,6 +5,7 @@
 
 import { Router } from 'express';
 import {
+  deleteUser,
   loginUser,
   registerUser,
   renewToken,
@@ -18,12 +19,10 @@ import { jwtValidation } from '../middlewares/jwtValidate';
 
 const router: Router = Router();
 
-// All routes must be passed first throuhg the middleware
-router.use(jwtValidation);
-
 router.post('/register', registerValidations, registerUser);
 router.post('/login', loginValidations, loginUser);
-router.put('/:id', registerValidations, updateUser);
+router.put('/:id', registerValidations, jwtValidation, updateUser);
+router.delete('/delete/:id', jwtValidation, deleteUser);
 router.get('/renew', jwtValidation, renewToken);
 
 export default router;
