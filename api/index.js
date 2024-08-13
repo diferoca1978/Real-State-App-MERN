@@ -7,6 +7,7 @@ const app = express();
 
 // DB connection
 dbConnection();
+
 // To parse the body
 app.use(express.json());
 

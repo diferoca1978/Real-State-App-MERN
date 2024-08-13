@@ -22,6 +22,22 @@ const registerValidations = [
   fieldErrors,
 ];
 
+const loginValidations = [
+  check('email')
+    .notEmpty()
+    .withMessage('Mandatory Field.')
+    .isEmail()
+    .withMessage('Must be a valid email.'),
+
+  check('password')
+    .notEmpty()
+    .withMessage('Mandatory Field.')
+    .isLength({ min: 3 })
+    .withMessage('Must have at least 3 characters.'),
+  fieldErrors,
+];
+
 module.exports = {
   registerValidations,
+  loginValidations,
 };
