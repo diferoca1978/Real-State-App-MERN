@@ -87,11 +87,30 @@ const userLogin = async (req, res) => {
   }
 };
 
-const userProfile = (req, res) => {
-  res.json({
-    ok: true,
-    message: 'From profile',
-  });
+const userProfile = async (req, res) => {
+  const { uid } = req;
+
+  try {
+    const user = await User.findById(uid);
+
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        message: 'User not found ❌',
+      });
+    }
+
+    res.json({
+      ok: true,
+      user,
+    });
+  } catch (error) {
+    console.error({ error });
+    res.status(500).json({
+      ok: false,
+      message: 'Please contact with customer service',
+    });
+  }
 };
 
 const updateProcess = async (req, res) => {

@@ -55,7 +55,7 @@ export const ProfilePage = () => {
   return (
     <>
       <div className="flex justify-center items-center min-h-screen px-6 py-12 lg:px-8">
-        <Card className="w-[700px] text-center">
+        <Card className="w-full max-w-xl text-center">
           <CardHeader className="space-y-6">
             <CardTitle>Profile</CardTitle>
             <img
