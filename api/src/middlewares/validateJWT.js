@@ -7,7 +7,7 @@ const validateJWT = (req = request, res, next) => {
   if (!token) {
     res.status(401).json({
       ok: false,
-      message: 'Token was not sent',
+      message: 'No token provided',
     });
   }
 
@@ -19,6 +19,8 @@ const validateJWT = (req = request, res, next) => {
 
     req.uid = uid;
     req.name = name;
+
+    next();
   } catch (error) {
     console.log(error);
     res.status(401).json({
@@ -26,7 +28,6 @@ const validateJWT = (req = request, res, next) => {
       message: 'Invalid token',
     });
   }
-  next();
 };
 
 module.exports = {

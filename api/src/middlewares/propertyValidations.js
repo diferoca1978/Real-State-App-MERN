@@ -29,12 +29,17 @@ const propertiesValidations = [
     .withMessage('The name must have at least 3 characters.'),
 
   check('propertyType').notEmpty().withMessage('Madatory field'),
-
   check('typeOffer').notEmpty().withMessage('Madatory field'),
   check('bedrooms').notEmpty().withMessage('Madatory field'),
   check('bathrooms').notEmpty().withMessage('Madatory field'),
   check('parking').notEmpty().withMessage('Madatory field'),
-  check('image').notEmpty().withMessage('Madatory field'),
+  // check('image')
+  //   .optional()
+  //   .custom((value, { req }) => {
+  //     if (req.fieldErrors || !req.file) {
+  //       throw new Error('Mandatory field / Invalid type file');
+  //     }
+  //   }),
   fieldErrors,
 ];
 

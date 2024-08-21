@@ -26,7 +26,6 @@ const showAllByUserId = async (req, res = response) => {
 };
 
 const createProperty = async (req = request, res = response) => {
-  console.log(req.file);
   const {
     propertyname,
     neighborhood,
@@ -41,7 +40,8 @@ const createProperty = async (req = request, res = response) => {
   } = req.body;
   try {
     // Upload image to cloudinary
-    const uploadResp = await cloudinary.uploader.upload(req.file.path, {
+    const { path } = req.file;
+    const uploadResp = await cloudinary.uploader.upload(path, {
       upload_preset: 'real_estate',
     });
     console.log(uploadResp);
@@ -65,7 +65,7 @@ const createProperty = async (req = request, res = response) => {
       const propertySaved = await property.save();
 
       // Remove the uploaded image from the uploads folder created by multer
-      fs.unlinkSync(req.file.path);
+      fs.unlinkSync(path);
 
       res.status(201).json({
         ok: true,
