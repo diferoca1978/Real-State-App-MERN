@@ -16,6 +16,7 @@ app.use('/api/auth', require('./src/routes/authRoutes'));
 app.use('/api/prts', require('./src/routes/propertiesRoutes'));
 
 // Listening queries
-app.listen(process.env.PORT, () => {
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, () => {
   console.log(`Server up on ${process.env.PORT} port`);
 });

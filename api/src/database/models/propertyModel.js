@@ -57,6 +57,9 @@ const propertySchema = new Schema(
       required: true,
       trim: true,
     },
+    cloudinary_id: {
+      type: String,
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
