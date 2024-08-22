@@ -3,6 +3,7 @@ const {
   createProperty,
   showAllByUserId,
   updateProperty,
+  deleteProperty,
 } = require('../controllers/prtsController');
 
 const { validateJWT } = require('../middlewares/validateJWT');
@@ -22,6 +23,13 @@ router.post(
   propertiesValidations,
   createProperty
 );
-router.put('/update/:id', updateProperty);
+router.put(
+  '/update/:id',
+  fileUpload.single('image'),
+  propertiesValidations,
+  updateProperty
+);
+
+router.delete('/delete/:id', deleteProperty);
 
 module.exports = router;
