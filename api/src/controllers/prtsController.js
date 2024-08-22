@@ -40,8 +40,6 @@ const createProperty = async (req = request, res = response) => {
     parking,
   } = req.body;
   try {
-    const defaulImage =
-      'https://res.cloudinary.com/carofedi/image/upload/v1724364460/default_avatar_lo6h40.png';
     // Upload image to cloudinary
     const { path } = req.file;
     const uploadResp = await cloudinary.uploader.upload(path, {
@@ -74,7 +72,7 @@ const createProperty = async (req = request, res = response) => {
         bedrooms,
         bathrooms,
         parking,
-        image: uploadResp ? uploadResp.secure_url : 'default_avatar.png',
+        image: uploadResp.secure_url,
         cloudinary_id: uploadResp.public_id,
         user: req.uid,
       });
