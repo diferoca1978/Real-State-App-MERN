@@ -158,19 +158,53 @@ const updateProperty = async (req = request, res = response) => {
     });
     fs.unlinkSync(path);
   } catch (error) {
-    console.error({ error });
+    console.timeLog({ error });
     res.status(500).json({
       ok: false,
-      message: 'Contact with costumer service',
+      message: 'Upss!! an error has occurred with the upload process',
     });
   }
 };
 
-const deleteProperty = (req = request, res = response) => {
+const deleteProperty = async (req = request, res = response) => {
   const userId = req.uid;
+  const property = req.params.id;
 
   try {
-  } catch (error) {}
+    const propertyTodelete = await Property.findById(property);
+
+    if (!propertyTodelete) {
+      return res.status(404).json({
+        ok: false,
+        message: 'Property not found',
+      });
+    }
+
+    if (propertyTodelete.user.toString() !== userId) {
+      return res.status(401).json({
+        ok: false,
+        message: 'Unauthorized to delete this property',
+      });
+    }
+
+    await cloudinary.uploader.destroy(propertyTodelete.cloudinary_id);
+    const propertyDeleted = await Property.findByIdAndDelete(
+      propertyTodelete.id
+    );
+
+    if (propertyDeleted) {
+      res.json({
+        ok: true,
+        message: 'Success 🚀 property was deleted',
+      });
+    }
+  } catch (error) {
+    console.log({ error });
+    res.status(500).json({
+      ok: false,
+      message: 'Upss!! an error has occurred with the delete process',
+    });
+  }
 };
 
 module.exports = {
