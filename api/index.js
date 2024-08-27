@@ -1,12 +1,20 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const dbConnection = require('./src/database/config');
 require('dotenv').config();
 
-// raise the server
+// Raise the server
 const app = express();
+
+// Cookies
+app.use(cookieParser());
 
 // DB connection
 dbConnection();
+
+//CORS
+app.use(cors());
 
 // To parse the body
 app.use(express.json());

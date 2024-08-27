@@ -37,7 +37,7 @@ const userRegister = async (req = request, res = response) => {
   }
 };
 
-const userLogin = async (req, res) => {
+const userLogin = async (req, res = response) => {
   const { email, password } = req.body;
 
   try {
@@ -57,7 +57,7 @@ const userLogin = async (req, res) => {
     const validPass = bcrypt.compareSync(password, userToLogin.password);
 
     if (!validPass) {
-      return res.json({
+      return res.status(401).json({
         ok: false,
         errors: {
           password: {
@@ -71,7 +71,10 @@ const userLogin = async (req, res) => {
 
     const token = await generateJWT(userToLogin.id, userToLogin.name);
 
-    res.json({
+    // Set token into cookie
+    res.cookie('rememberme', token);
+
+    res.status(200).json({
       ok: true,
       user: {
         userId: userToLogin.id,
@@ -80,7 +83,8 @@ const userLogin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error({
+    console.error('Error during user login:', error);
+    res.status(500).json({
       ok: false,
       message: 'Please contact with customer service',
     });

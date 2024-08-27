@@ -18,6 +18,7 @@ import { Button } from '../../components/ui/button';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { GoogleLogo } from '../../shared/Logo';
+import { useAuthStore } from '../../hooks/useAuthStore';
 
 const initialValues = {
   email: '',
@@ -41,6 +42,8 @@ export const LoginPage = () => {
     resolver: zodResolver(formSchema),
   });
 
+  const { startLogin } = useAuthStore();
+
   const [showPassword, SetShowPassword] = useState(false);
 
   const tooglePassword = () => {
@@ -48,7 +51,7 @@ export const LoginPage = () => {
   };
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    startLogin(data);
   };
   return (
     <>
