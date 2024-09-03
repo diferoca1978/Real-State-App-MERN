@@ -17,11 +17,13 @@ import {
 } from '../auth/pages';
 import { MainLayout } from '../layout/MainLayout';
 import { ErrorPage } from '../shared/ErrorPage';
+import { PrivateRoute } from '../auth/componets';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* RealState Routes */}
+
       <Route path="/" element={<MainLayout />} errorElement={<ErrorPage />}>
         <Route index element={<HomePage />} />
         <Route path="about" element={<AboutPage />} />
@@ -34,8 +36,10 @@ export const router = createBrowserRouter(
       <Route path="auth" element={<MainLayout />} errorElement={<ErrorPage />}>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path="profile" element={<ProfilePage />} />
-        <Route path="createListing" element={<CreateListingsPage />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="createListing" element={<CreateListingsPage />} />
+        </Route>
       </Route>
     </>
   )

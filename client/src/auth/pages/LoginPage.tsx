@@ -15,8 +15,8 @@ import {
 } from '../../components/ui/form';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { GoogleLogo } from '../../shared/Logo';
 import { useAuthStore } from '../../hooks/useAuthStore';
 
@@ -42,7 +42,9 @@ export const LoginPage = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { startLogin } = useAuthStore();
+  const { startLogin, status } = useAuthStore();
+
+  const navigate = useNavigate();
 
   const [showPassword, SetShowPassword] = useState(false);
 
@@ -50,9 +52,12 @@ export const LoginPage = () => {
     SetShowPassword(!showPassword);
   };
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    startLogin(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const loginSuccess = await startLogin(data);
+
+    loginSuccess ? navigate('/') : navigate('/auth/login');
   };
+
   return (
     <>
       <FormsLayout title="Sing In">
@@ -107,7 +112,11 @@ export const LoginPage = () => {
               )}
             />
             <Button type="submit" className="w-full">
-              Sing In
+              {status === 'cheking' ? (
+                <Loader2 className="mr2 h-4 w-4 animate-spin" />
+              ) : (
+                'Sing in'
+              )}
             </Button>
 
             <div className="flex items-center justify-center space-x-2 my-2">

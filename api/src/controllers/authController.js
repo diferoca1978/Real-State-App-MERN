@@ -71,9 +71,6 @@ const userLogin = async (req, res = response) => {
 
     const token = await generateJWT(userToLogin.id, userToLogin.name);
 
-    // Set token into cookie
-    res.cookie('rememberme', token);
-
     res.status(200).json({
       ok: true,
       user: {

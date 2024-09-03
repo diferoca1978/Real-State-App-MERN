@@ -11,8 +11,11 @@ import { Sheet, SheetContent, SheetTrigger } from '../components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Menu, User, LogOut, Package2Icon } from 'lucide-react';
 import { Separator } from '../components/ui/separator';
+import { useAuthStore } from '../hooks/useAuthStore';
 
 export const NavBar = () => {
+  const { user, status, startLogOut } = useAuthStore();
+
   return (
     <>
       <header className="sticky z-10 top-0 w-full flex h-16 items-center gap-4 border-b bg-primary px-4 md:px-6">
@@ -75,47 +78,49 @@ export const NavBar = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild className="text-inherit">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full w-7 h-7"
-                  >
-                    <Avatar>
-                      <AvatarImage src="#" alt="avatarImage" />
-                      <AvatarFallback>UA</AvatarFallback>
-                    </Avatar>
-                    <span className="sr-only">Toogle user menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="bg-primary rounded-lg p-2 mt-1"
-                >
-                  <DropdownMenuLabel className="mb-2 text-center border-b-2 border-secondary-foreground pb-1">
-                    <p>Welcome !!</p>
-                    <p>username</p>
-                  </DropdownMenuLabel>
-                  <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
-                    <NavLink to="/auth/profile" className="flex gap-4">
-                      Profile
-                      <User />
-                    </NavLink>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="p-1 outline-none">
+              {status === 'authenticated' && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild className="text-inherit">
                     <Button
-                      type="button"
-                      variant="ghost"
-                      className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full w-7 h-7"
                     >
-                      Logout
-                      <LogOut />
+                      <Avatar>
+                        <AvatarImage src="#" alt="avatarImage" />
+                        <AvatarFallback>UA</AvatarFallback>
+                      </Avatar>
+                      <span className="sr-only">Toogle user menu</span>
                     </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-primary rounded-lg p-2 mt-1"
+                  >
+                    <DropdownMenuLabel className="mb-2 text-center border-b-2 border-secondary-foreground pb-1">
+                      <p>Welcome !!</p>
+                      <p>{user.name}</p>
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
+                      <NavLink to="/auth/profile" className="flex gap-4">
+                        Profile
+                        <User />
+                      </NavLink>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="p-1 outline-none">
+                      <Button
+                        onClick={startLogOut}
+                        type="button"
+                        variant="ghost"
+                        className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "
+                      >
+                        Logout
+                        <LogOut />
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </nav>
           </div>
         </div>
@@ -134,7 +139,7 @@ export const NavBar = () => {
             <nav className="grid gap-6 text-lg justify-start">
               <div>
                 <h4>Hello,</h4>
-                <p>username</p>
+                <p>usernamo</p>
                 <Separator className=" my-3" />
               </div>
               <NavLink
