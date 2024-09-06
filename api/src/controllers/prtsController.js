@@ -2,7 +2,6 @@ const { response, request } = require('express');
 const fs = require('fs');
 const Property = require('../database/models/propertyModel');
 const cloudinary = require('../helpers/cloudinaryConf');
-const { secureHeapUsed } = require('crypto');
 
 const showAllByUserId = async (req, res = response) => {
   const userId = req.uid;
@@ -44,6 +43,7 @@ const createProperty = async (req = request, res = response) => {
     const { path } = req.file;
     const uploadResp = await cloudinary.uploader.upload(path, {
       upload_preset: 'real_estate',
+      folder: 'Properties_Images',
       transformation: [
         {
           quality: 'auto',
@@ -127,6 +127,7 @@ const updateProperty = async (req = request, res = response) => {
     if (req.file) {
       uploadResp = await cloudinary.uploader.upload(path, {
         upload_preset: 'real_estate',
+        folder: 'real_estate_img/Properties_Images',
       });
     }
     console.log(uploadResp);

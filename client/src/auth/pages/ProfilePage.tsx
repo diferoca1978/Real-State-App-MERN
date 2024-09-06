@@ -4,6 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '../../components/ui/card';
 import {
   Form,
@@ -20,14 +21,12 @@ import { Input } from '../../components/ui/input';
 
 import { z } from 'zod';
 import { HouseIcon, LogOutIcon, Trash2 } from 'lucide-react';
-
-const initialValues = {
-  name: '',
-  email: '',
-  password: '',
-};
+import { useAuthStore } from '../../hooks/useAuthStore';
+import { Avatar, AvatarImage } from '../../components/ui/avatar';
+import { useRef, useState } from 'react';
 
 const formSchema = z.object({
+  image: z.string().optional(),
   name: z
     .string()
     .min(1, { message: 'Name is required' })
@@ -43,10 +42,37 @@ const formSchema = z.object({
 });
 
 export const ProfilePage = () => {
+  const { user, startLogOut } = useAuthStore();
+
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const [setselectedImage, setSetselectedImage] = useState<string | null>(
+    (user as { image: string }).image
+  );
+
+  const initialValues = {
+    image: (user as { image: string }).image,
+    name: (user as { name: string }).name,
+    email: (user as { email: string }).email,
+    password: (user as { password: string }).password,
+  };
+
   const form = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(formSchema),
   });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSetselectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      form.setValue('image', file.name);
+    }
+  };
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
@@ -57,12 +83,10 @@ export const ProfilePage = () => {
       <div className="flex justify-center items-center min-h-screen px-6 py-12 lg:px-8">
         <Card className="w-full max-w-xl text-center">
           <CardHeader className="space-y-6">
-            <CardTitle>Profile</CardTitle>
-            <img
-              src="#"
-              alt="UI"
-              className="rounded-full bg-primary w-24 h-24 self-center"
-            />
+            <CardTitle>Profile </CardTitle>
+            <CardDescription>
+              Hello, {(user as { name: string }).name}
+            </CardDescription>
           </CardHeader>
           <CardContent className="text-left">
             <Form {...form}>
@@ -70,6 +94,29 @@ export const ProfilePage = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 p-4"
               >
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  className="cursor-pointer"
+                >
+                  <Avatar className="mx-auto w-24 h-24">
+                    <AvatarImage
+                      src={
+                        setselectedImage || (user as { image: string }).image
+                      }
+                      alt="Profile_img"
+                    />
+                  </Avatar>
+                </div>
+
+                <Input
+                  type="file"
+                  placeholder="image"
+                  ref={fileRef}
+                  onChange={handleImageChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+
                 <FormField
                   control={form.control}
                   name="name"
@@ -94,6 +141,7 @@ export const ProfilePage = () => {
                           type="email"
                           placeholder="Email@prueba.com"
                           {...field}
+                          value={initialValues.email}
                         />
                       </FormControl>
                       <FormMessage />
@@ -132,7 +180,10 @@ export const ProfilePage = () => {
                 <Trash2 size={28} className="mr-2" />
                 <NavLink to="#">Delete account</NavLink>
               </Button>
-              <Button className="w-full mb-5 md:w-auto hover:text-destructive">
+              <Button
+                onClick={startLogOut}
+                className="w-full mb-5 md:w-auto hover:text-destructive"
+              >
                 <LogOutIcon size={28} className="mr-2" />
                 <NavLink to="#">Logout</NavLink>
               </Button>

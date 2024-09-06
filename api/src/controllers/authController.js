@@ -21,7 +21,7 @@ const userRegister = async (req = request, res = response) => {
     await newUser.save();
 
     //Generate JWT
-    const token = await generateJWT(newUser.id, newUser.name);
+    const token = await generateJWT(newUser.id, newUser.name, newUser.email);
 
     res.json({
       ok: true,
@@ -69,13 +69,19 @@ const userLogin = async (req, res = response) => {
 
     // GenerateJWT
 
-    const token = await generateJWT(userToLogin.id, userToLogin.name);
+    const token = await generateJWT(
+      userToLogin.id,
+      userToLogin.name,
+      userToLogin.email
+    );
 
     res.status(200).json({
       ok: true,
       user: {
         userId: userToLogin.id,
         name: userToLogin.name,
+        email: userToLogin.email,
+        image: userToLogin.image,
         token,
       },
     });
@@ -136,7 +142,7 @@ const updateProcess = async (req, res) => {
     }
 
     const newUser = {
-      avatar: req.body.avatar,
+      image: req.body.image,
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,

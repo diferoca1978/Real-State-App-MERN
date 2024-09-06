@@ -23,7 +23,12 @@ export const useAuthStore = () => {
       });
 
       localStorage.setItem('fhasdjkh', data.user.token);
-      onLogin({ name: data.user.name, userId: data.user.userId });
+      onLogin({
+        name: data.user.name,
+        userId: data.user.userId,
+        email: data.user.email,
+        image: data.user.image,
+      });
       return true;
     } catch (error: unknown) {
       console.log({ error });
@@ -44,7 +49,12 @@ export const useAuthStore = () => {
 
       localStorage.setItem('fhasdjkh', data.token);
 
-      onLogin({ name: data.name, userId: data.userId });
+      onLogin({
+        name: data.name,
+        userId: data.userId,
+        email: data.email,
+        image: data.image,
+      });
     } catch (error) {
       console.log(error);
       localStorage.clear();
