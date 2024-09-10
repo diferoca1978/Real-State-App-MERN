@@ -95,10 +95,10 @@ const userLogin = async (req, res = response) => {
 };
 
 const userProfile = async (req, res) => {
-  const { uid } = req;
+  const userId = req.params.id;
 
   try {
-    const user = await User.findById(uid);
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({
@@ -160,6 +160,7 @@ const updateProcess = async (req, res) => {
     res.json({
       ok: true,
       message: 'Success 🚀 user updated',
+      user: userUpdated,
     });
   } catch (error) {
     console.log(error);

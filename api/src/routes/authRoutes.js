@@ -19,7 +19,7 @@ router.post('/register', registerValidations, userRegister);
 
 router.post('/login', loginValidations, userLogin);
 router.use(validateJWT); //? All routes that need Authentication must pass through this middleware.
-router.get('/profile', userProfile);
+router.get('/profile/:id', userProfile);
 router.put('/update/:id', updateProcess);
 router.delete('/delete/:id', deleteProcess);
 router.get('/renew', validateJWT, renewToken);
