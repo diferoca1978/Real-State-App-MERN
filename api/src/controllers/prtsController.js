@@ -43,7 +43,7 @@ const createProperty = async (req = request, res = response) => {
     const { path } = req.file;
     const uploadResp = await cloudinary.uploader.upload(path, {
       upload_preset: 'real_estate',
-      folder: 'Properties_Images',
+      folder: 'real_estate_img/Properties_Images',
       transformation: [
         {
           quality: 'auto',
@@ -109,8 +109,6 @@ const updateProperty = async (req = request, res = response) => {
     }
 
     if (propertyToUpdate.user.toString() !== req.uid) {
-      console.log(req.uid);
-
       return res.status(401).json({
         ok: false,
         message: 'Unauthorized to make changes',
@@ -144,7 +142,7 @@ const updateProperty = async (req = request, res = response) => {
       bathrooms: req.body.bathrooms,
       parking: req.body.parking,
       image: uploadResp?.secure_url || property.image,
-      cloudinary_id: uploadResp?.public_id || propertyToUpdate.cloudinary_id,
+      cloudinary_id: uploadResp?.public_id || propertyToUpdate,
       user: req.uid,
     };
 

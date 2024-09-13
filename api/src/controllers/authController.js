@@ -1,7 +1,9 @@
 const { response, request } = require('express');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const User = require('../database/models/userModel');
 const { generateJWT } = require('../helpers/jwt');
+const cloudinary = require('../helpers/cloudinaryConf');
 
 const userRegister = async (req = request, res = response) => {
   const { email, password } = req.body;
@@ -125,43 +127,88 @@ const updateProcess = async (req, res) => {
   const uid = req.uid;
 
   try {
-    const user = await User.findById(userId);
+    const userToupdate = await User.findById(userId);
 
-    if (!user) {
+    if (!userToupdate) {
       return res.status(404).json({
         ok: false,
         message: 'User not found ❌',
       });
     }
 
-    if (uid !== userId) {
+    if (userToupdate._id.toString() !== uid) {
       return res.status(403).json({
         ok: false,
         message: 'Unauthorized to make changes',
       });
     }
 
-    const newUser = {
-      image: req.body.image,
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      user: req.uid,
-    };
+    if (!req.file) {
+      const userUpdated = {
+        name: req.body.name || userToupdate.name,
+        email: req.body.email || userToupdate.email,
+        password: req.body.password,
+        image: userToupdate.image,
+      };
+      if (userUpdated.password) {
+        userUpdated.password = bcrypt.hashSync(userUpdated.password, 8);
+      }
 
-    if (newUser.password) {
-      newUser.password = bcrypt.hashSync(newUser.password, 8);
+      const newUser = await User.findByIdAndUpdate(
+        userToupdate._id.toString(),
+        userUpdated,
+        {
+          new: true,
+        }
+      );
+      return res.json({
+        ok: true,
+        message: 'User updated',
+        user: newUser,
+      });
+    } else {
+      if (req.file) {
+        const path = req.file.path;
+
+        const uploadResp = await cloudinary.uploader.upload(path, {
+          upload_preset: 'real_estate',
+          folder: 'real_estate_img/Users_Images',
+        });
+
+        if (uploadResp) {
+          const userUpdated = {
+            name: req.body.name || userToupdate.name,
+            email: req.body.email || userToupdate.email,
+            password: req.body.password,
+            image: uploadResp.secure_url,
+            cloudinary_id: uploadResp.public_id,
+          };
+          if (userUpdated.password) {
+            userUpdated.password = bcrypt.hashSync(userUpdated.password, 8);
+          }
+
+          fs.unlinkSync(path);
+
+          const newUser = await User.findByIdAndUpdate(
+            userToupdate._id.toString(),
+            userUpdated,
+            {
+              new: true,
+            }
+          );
+
+          // To destroy the existing image in cloudinary.
+          if (newUser.cloudinary_id) {
+            await cloudinary.uploader.destroy(userToupdate.cloudinary_id);
+          }
+          res.json({
+            ok: true,
+            message: 'User updated with image',
+            user: newUser,
+          });
+        }
+      }
     }
-
-    const userUpdated = await User.findByIdAndUpdate(userId, newUser, {
-      new: true,
-    });
-
-    res.json({
-      ok: true,
-      message: 'Success 🚀 user updated',
-      user: userUpdated,
-    });
   } catch (error) {
     console.log(error);
     res.status(501).json({

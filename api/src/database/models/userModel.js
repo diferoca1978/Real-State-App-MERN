@@ -20,7 +20,7 @@ const userSchema = new Schema(
     image: {
       type: String,
       default:
-        'https://res.cloudinary.com/carofedi/image/upload/v1725487708/realEstate_images/default_avatar_q3hbli.png',
+        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
     },
     cloudinary_id: {
       type: String,
