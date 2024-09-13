@@ -144,19 +144,19 @@ const updateProcess = async (req, res) => {
     }
 
     if (!req.file) {
-      const userUpdated = {
+      const fieldsToUpdate = {
         name: req.body.name || userToupdate.name,
         email: req.body.email || userToupdate.email,
         password: req.body.password,
         image: userToupdate.image,
       };
-      if (userUpdated.password) {
-        userUpdated.password = bcrypt.hashSync(userUpdated.password, 8);
+      if (fieldsToUpdate.password) {
+        fieldsToUpdate.password = bcrypt.hashSync(fieldsToUpdate.password, 8);
       }
 
       const newUser = await User.findByIdAndUpdate(
         userToupdate._id.toString(),
-        userUpdated,
+        fieldsToUpdate,
         {
           new: true,
         }
@@ -166,48 +166,42 @@ const updateProcess = async (req, res) => {
         message: 'User updated',
         user: newUser,
       });
-    } else {
-      if (req.file) {
-        const path = req.file.path;
+    }
 
-        const uploadResp = await cloudinary.uploader.upload(path, {
-          upload_preset: 'real_estate',
-          folder: 'real_estate_img/Users_Images',
-        });
+    if (req.file) {
+      const { path } = req.file;
+      const uploadResp = await cloudinary.uploader.upload(path, {
+        upload_preset: 'real_estate',
+        folder: 'real_estate_img/Users_Images',
+      });
 
-        if (uploadResp) {
-          const userUpdated = {
-            name: req.body.name || userToupdate.name,
-            email: req.body.email || userToupdate.email,
-            password: req.body.password,
-            image: uploadResp.secure_url,
-            cloudinary_id: uploadResp.public_id,
-          };
-          if (userUpdated.password) {
-            userUpdated.password = bcrypt.hashSync(userUpdated.password, 8);
-          }
-
-          fs.unlinkSync(path);
-
-          const newUser = await User.findByIdAndUpdate(
-            userToupdate._id.toString(),
-            userUpdated,
-            {
-              new: true,
-            }
-          );
-
-          // To destroy the existing image in cloudinary.
-          if (newUser.cloudinary_id) {
-            await cloudinary.uploader.destroy(userToupdate.cloudinary_id);
-          }
-          res.json({
-            ok: true,
-            message: 'User updated with image',
-            user: newUser,
-          });
-        }
+      const fieldsToUpdate = {
+        name: req.body.name || userToupdate.name,
+        email: req.body.email || userToupdate.email,
+        password: req.body.password,
+        image: uploadResp.secure_url,
+        cloudinary_id: uploadResp.public_id,
+      };
+      if (fieldsToUpdate.password) {
+        fieldsToUpdate.password = bcrypt.hashSync(fieldsToUpdate.password, 8);
       }
+      const newUser = await User.findByIdAndUpdate(
+        userToupdate._id.toString(),
+        fieldsToUpdate,
+        {
+          new: true,
+        }
+      );
+
+      fs.unlinkSync(path);
+
+      await cloudinary.uploader.destroy(userToupdate.cloudinary_id);
+
+      res.json({
+        ok: true,
+        message: 'User updated succesfully',
+        user: newUser,
+      });
     }
   } catch (error) {
     console.log(error);
