@@ -17,10 +17,10 @@ import {
 } from '../components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Menu, User, LogOut, Package2Icon } from 'lucide-react';
-//import { useUiStore } from '../hooks/useUiStore';
+import { useUiStore } from '../hooks/useUiStore';
 
 export const NavBar = () => {
-  //const { } = useUiStore();
+  const { status, currentUser, startLogOut } = useUiStore();
 
   return (
     <>
@@ -65,7 +65,9 @@ export const NavBar = () => {
               {status === 'not-authenticated' && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild className="text-inherit">
-                    <Button className="p-0">SingIn</Button>
+                    <Button variant="ghost" className="p-0 hover:bg-primary">
+                      SingIn
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
@@ -96,8 +98,11 @@ export const NavBar = () => {
                       className="rounded-full w-7 h-7 "
                     >
                       <Avatar className="md:w-9 md:h-9 border ">
-                        <AvatarImage src="" alt="avatarImage" />
-                        <AvatarFallback>UA</AvatarFallback>
+                        <AvatarImage
+                          src={currentUser.image}
+                          alt="avatarImage"
+                        />
+                        <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
                       </Avatar>
                       <span className="sr-only">Toogle user menu</span>
                     </Button>
@@ -108,7 +113,7 @@ export const NavBar = () => {
                   >
                     <DropdownMenuLabel className="mb-2 text-center border-b-2 border-secondary-foreground pb-1">
                       <p>Welcome !!</p>
-                      <p>Name must be here</p>
+                      <p>{currentUser.name}</p>
                     </DropdownMenuLabel>
                     <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
                       <NavLink to="/auth/profile" className="flex gap-4">
@@ -118,6 +123,7 @@ export const NavBar = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem className="p-1 outline-none">
                       <Button
+                        onClick={startLogOut}
                         type="button"
                         variant="ghost"
                         className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "
@@ -143,9 +149,14 @@ export const NavBar = () => {
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[200px] sm:w-[250px]">
+          <SheetContent
+            side="left"
+            className="w-[200px] sm:w-[250px] bg-secondary"
+          >
             <SheetHeader className="mb-6">
-              <SheetTitle className="text-lg mb-1">Hello,</SheetTitle>
+              <SheetTitle className="text-lg mb-1">
+                Hello, <p>{currentUser?.name}</p>
+              </SheetTitle>
               {status === 'authenticated' && (
                 <SheetDescription className="text-lg text-primary-foreground"></SheetDescription>
               )}
@@ -175,82 +186,89 @@ export const NavBar = () => {
               >
                 Search
               </NavLink>
-              {/* {status === 'authenticated' ? ( */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild className="text-inherit">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full w-7 h-7"
-                  >
-                    <Avatar>
-                      <AvatarImage src="" alt="avatarImage" />
-                      <AvatarFallback>UI</AvatarFallback>
-                    </Avatar>
-                    <span className="sr-only">Toogle user menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="bg-primary rounded-lg p-2 mt-1"
-                >
-                  <DropdownMenuLabel className="mb-2 text-center border-b-2 border-secondary-foreground pb-1">
-                    <p>Welcome !!</p>
-                    <p>Name must be here</p>
-                  </DropdownMenuLabel>
-                  <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
-                    <NavLink to="/auth/profile" className="flex gap-4">
-                      Profile
-                      <User />
-                    </NavLink>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="p-1 outline-none">
+              {status === 'authenticated' ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild className="text-inherit">
                     <Button
-                      type="button"
-                      variant="ghost"
-                      className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full w-7 h-7"
                     >
-                      Logout
-                      <LogOut />
+                      <Avatar>
+                        <AvatarImage
+                          src={currentUser.image}
+                          alt="avatarImage"
+                        />
+                        <AvatarFallback>{currentUser.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <span className="sr-only">Toogle user menu</span>
                     </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              {/* ) : (
-                status === 'not-authenticated' && ( */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="text-lg outline-none hover:bg-transparent hover:text-orange-500 p-0"
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-primary rounded-lg p-2 mt-1"
                   >
-                    Sing In
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="bg-primary rounded-lg p-2 mt-1"
-                >
-                  <DropdownMenuLabel className="mb-2">Hello,</DropdownMenuLabel>
-                  <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
-                    <NavLink
-                      to="/auth/login"
-                      className="flex justify-between items-center"
+                    <DropdownMenuLabel className="mb-2 text-center border-b-2 border-secondary-foreground pb-1">
+                      <p>Welcome !!</p>
+                      <p>{currentUser.name}</p>
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
+                      <NavLink to="/auth/profile" className="flex gap-4">
+                        Profile
+                        <User />
+                      </NavLink>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="p-1 outline-none">
+                      <Button
+                        onClick={startLogOut}
+                        type="button"
+                        variant="ghost"
+                        className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "
+                      >
+                        Logout
+                        <LogOut />
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                status === 'not-authenticated' && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="text-lg outline-none hover:bg-transparent hover:text-orange-500 p-0"
+                      >
+                        Sing In
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="bg-primary rounded-lg p-2 mt-1"
                     >
-                      Sing In
-                    </NavLink>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
-                    <NavLink
-                      to="/auth/register"
-                      className="flex justify-between items-center"
-                    >
-                      Sing Up
-                    </NavLink>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              ){/* )} */}
+                      <DropdownMenuLabel className="mb-2">
+                        Hello,
+                      </DropdownMenuLabel>
+                      <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
+                        <NavLink
+                          to="/auth/login"
+                          className="flex justify-between items-center"
+                        >
+                          Sing In
+                        </NavLink>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="p-1 outline-none hover:text-orange-500">
+                        <NavLink
+                          to="/auth/register"
+                          className="flex justify-between items-center"
+                        >
+                          Sing Up
+                        </NavLink>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              )}
             </nav>
           </SheetContent>
         </Sheet>

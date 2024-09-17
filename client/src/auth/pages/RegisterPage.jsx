@@ -1,9 +1,6 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { FormsLayout } from '../../layout/Formslayout';
 import {
   Form,
@@ -17,17 +14,23 @@ import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { GoogleLogo } from '../../shared/Logo';
 import { useUiStore } from '../../hooks';
-import { toastError } from '../../helpers';
-import { ToastContainer, Zoom } from 'react-toastify';
+import { toastError } from '../../helpers/toast';
+import { ToastContainer } from 'react-toastify';
 
 const initialValues = {
+  name: '',
   email: '',
   password: '',
 };
 
 const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: 'Name is required' })
+    .max(30, { message: 'Field must contain max 30 characters' }),
   email: z
     .string()
     .email({ message: 'Must be a valid Email' })
@@ -35,38 +38,52 @@ const formSchema = z.object({
     .min(1, { message: 'Email is required' }),
   password: z
     .string()
-    .min(3, { message: 'Password must have at least 3 characters' }),
+    .min(3, { message: 'Password must be at least 3 characters' }),
 });
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
   const form = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(formSchema),
   });
 
-  const { startLogin, errorMsg } = useUiStore();
+  const { startRegister, errorMsg } = useUiStore();
 
   useEffect(() => {
-    errorMsg ? toastError(errorMsg) : '';
+    errorMsg && toastError(errorMsg);
   }, [errorMsg]);
 
-  const [showPassword, SetShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const tooglePassword = () => {
-    SetShowPassword(!showPassword);
+    setShowPassword(!showPassword);
   };
-  const onSubmit = ({ email, password }) => {
-    startLogin({ email, password });
+
+  const onSubmit = (data) => {
+    startRegister(data);
   };
 
   return (
     <>
-      <FormsLayout title="Sing In">
+      <FormsLayout title="Sing Up">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 p-4"
           >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -112,9 +129,9 @@ export const LoginPage = () => {
                 </FormItem>
               )}
             />
+
             <Button type="submit" className="w-full">
-              Sing In
-              <ToastContainer transition={Zoom} />
+              Sing Up
             </Button>
 
             <div className="flex items-center justify-center space-x-2 my-2">
@@ -130,11 +147,13 @@ export const LoginPage = () => {
               <GoogleLogo /> <span className="ml-2">Sing In with Google</span>
             </Button>
 
-            <p className="transition ease-in-out delay-100 hover:translate-x-3 hover:text-muted-foreground hover:scale-105 duration-200">
-              <NavLink to="/auth/register">
-                Do not have an account? Sing Up !!
+            <p className="transition ease-in-out delay-100 hover:translate-x-3 hover:text-muted-foreground hover:scale-105 duration-150">
+              <NavLink to="/auth/login">
+                Do you have an account? Sing In!!
               </NavLink>
             </p>
+
+            <ToastContainer />
           </form>
         </Form>
       </FormsLayout>
