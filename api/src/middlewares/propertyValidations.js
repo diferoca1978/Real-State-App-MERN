@@ -2,7 +2,7 @@ const { check } = require('express-validator');
 const fieldErrors = require('./validationsResults');
 
 const propertiesValidations = [
-  check('propertyname')
+  check('propertyName')
     .notEmpty()
     .withMessage('Madatory field')
     .isLength({ min: 3, max: 50 })
@@ -33,13 +33,19 @@ const propertiesValidations = [
   check('bedrooms').notEmpty().withMessage('Madatory field'),
   check('bathrooms').notEmpty().withMessage('Madatory field'),
   check('parking').notEmpty().withMessage('Madatory field'),
-  // check('image')
-  //   .optional()
-  //   .custom((value, { req }) => {
-  //     if (req.fieldErrors || !req.file) {
-  //       throw new Error('Mandatory field / Invalid type file');
-  //     }
-  //   }),
+  check('imageUrls')
+    .isArray({ min: 0 })
+    .withMessage('imageUrls must be a non-empty array.')
+    //Custom validator to check if the array contains empty strings
+    .custom((imageUrls) => {
+      if (imageUrls.length === 0) {
+        throw new Error('imageUrls array cannot be empty.');
+      }
+      if (imageUrls.some((url) => !url)) {
+        throw new Error('imageUrls array contains empty or invalid values.');
+      }
+      return true;
+    }),
   fieldErrors,
 ];
 

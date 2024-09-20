@@ -1,9 +1,7 @@
 const { response, request } = require('express');
-const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const User = require('../database/models/userModel');
 const { generateJWT } = require('../helpers/jwt');
-const cloudinary = require('../helpers/cloudinaryConf');
 
 const userRegister = async (req = request, res = response) => {
   const { email, password } = req.body;
@@ -71,11 +69,7 @@ const userLogin = async (req, res = response) => {
 
     // GenerateJWT
 
-    const token = await generateJWT(
-      userToLogin.id,
-      userToLogin.name,
-      userToLogin.email
-    );
+    const token = await generateJWT(userToLogin.id, userToLogin.name);
 
     res.status(200).json({
       ok: true,
@@ -143,66 +137,28 @@ const updateProcess = async (req, res) => {
       });
     }
 
-    if (!req.file) {
-      const fieldsToUpdate = {
-        name: req.body.name || userToupdate.name,
-        email: req.body.email || userToupdate.email,
-        password: req.body.password,
-        image: userToupdate.image,
-      };
-      if (fieldsToUpdate.password) {
-        fieldsToUpdate.password = bcrypt.hashSync(fieldsToUpdate.password, 8);
-      }
-
-      const newUser = await User.findByIdAndUpdate(
-        userToupdate._id.toString(),
-        fieldsToUpdate,
-        {
-          new: true,
-        }
-      );
-      return res.json({
-        ok: true,
-        message: 'User updated',
-        user: newUser,
-      });
+    const fieldsToUpdate = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      image: req.body.image,
+    };
+    if (fieldsToUpdate.password) {
+      fieldsToUpdate.password = bcrypt.hashSync(fieldsToUpdate.password, 8);
     }
 
-    if (req.file) {
-      const { path } = req.file;
-      const uploadResp = await cloudinary.uploader.upload(path, {
-        upload_preset: 'real_estate',
-        folder: 'real_estate_img/Users_Images',
-      });
-
-      const fieldsToUpdate = {
-        name: req.body.name || userToupdate.name,
-        email: req.body.email || userToupdate.email,
-        password: req.body.password,
-        image: uploadResp.secure_url,
-        cloudinary_id: uploadResp.public_id,
-      };
-      if (fieldsToUpdate.password) {
-        fieldsToUpdate.password = bcrypt.hashSync(fieldsToUpdate.password, 8);
+    const newUser = await User.findByIdAndUpdate(
+      userToupdate._id.toString(),
+      fieldsToUpdate,
+      {
+        new: true,
       }
-      const newUser = await User.findByIdAndUpdate(
-        userToupdate._id.toString(),
-        fieldsToUpdate,
-        {
-          new: true,
-        }
-      );
-
-      fs.unlinkSync(path);
-
-      await cloudinary.uploader.destroy(userToupdate.cloudinary_id);
-
-      res.json({
-        ok: true,
-        message: 'User updated succesfully',
-        user: newUser,
-      });
-    }
+    );
+    return res.json({
+      ok: true,
+      message: 'User updated',
+      user: newUser,
+    });
   } catch (error) {
     console.log(error);
     res.status(501).json({

@@ -1,7 +1,5 @@
 const { response, request } = require('express');
-const fs = require('fs');
 const Property = require('../database/models/propertyModel');
-const cloudinary = require('../helpers/cloudinaryConf');
 
 const showAllByUserId = async (req, res = response) => {
   const userId = req.uid;
@@ -27,7 +25,7 @@ const showAllByUserId = async (req, res = response) => {
 
 const createProperty = async (req = request, res = response) => {
   const {
-    propertyname,
+    propertyName,
     neighborhood,
     address,
     price,
@@ -37,55 +35,30 @@ const createProperty = async (req = request, res = response) => {
     bedrooms,
     bathrooms,
     parking,
+    imageUrls,
   } = req.body;
+
   try {
-    // Upload image to cloudinary
-    const { path } = req.file;
-    const uploadResp = await cloudinary.uploader.upload(path, {
-      upload_preset: 'real_estate',
-      folder: 'real_estate_img/Properties_Images',
-      transformation: [
-        {
-          quality: 'auto',
-          fetch_format: 'auto',
-        },
-        {
-          width: 1280,
-          height: 855,
-          crop: 'fill',
-          gravity: 'auto',
-        },
-      ],
+    const property = new Property({
+      propertyName,
+      neighborhood,
+      address,
+      price,
+      description,
+      propertyType,
+      typeOffer,
+      bedrooms,
+      bathrooms,
+      parking,
+      imageUrls,
+      user: req.uid,
     });
+    const propertySaved = await property.save();
 
-    console.log(uploadResp);
-
-    if (uploadResp) {
-      const property = new Property({
-        propertyname,
-        neighborhood,
-        address,
-        price,
-        description,
-        propertyType,
-        typeOffer,
-        bedrooms,
-        bathrooms,
-        parking,
-        image: uploadResp.secure_url,
-        cloudinary_id: uploadResp.public_id,
-        user: req.uid,
-      });
-      const propertySaved = await property.save();
-
-      // Remove the uploaded image from the uploads folder created by multer
-      fs.unlinkSync(path);
-
-      res.status(201).json({
-        ok: true,
-        propertySaved,
-      });
-    }
+    res.status(201).json({
+      ok: true,
+      propertySaved,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -115,23 +88,8 @@ const updateProperty = async (req = request, res = response) => {
       });
     }
 
-    //to destroy the existing image in cloudinary.
-    const { path } = req.file;
-    await cloudinary.uploader.destroy(propertyToUpdate.cloudinary_id);
-
-    //to upload the new image.
-    let uploadResp;
-
-    if (req.file) {
-      uploadResp = await cloudinary.uploader.upload(path, {
-        upload_preset: 'real_estate',
-        folder: 'real_estate_img/Properties_Images',
-      });
-    }
-    console.log(uploadResp);
-
     const newProperty = {
-      propertyname: req.body.propertyname,
+      propertyName: req.body.propertyName,
       neighborhood: req.body.neighborhood,
       address: req.body.address,
       price: req.body.price,
@@ -141,8 +99,7 @@ const updateProperty = async (req = request, res = response) => {
       bedrooms: req.body.bedrooms,
       bathrooms: req.body.bathrooms,
       parking: req.body.parking,
-      image: uploadResp?.secure_url || property.image,
-      cloudinary_id: uploadResp?.public_id || propertyToUpdate,
+      image: req.body.image,
       user: req.uid,
     };
 
@@ -155,7 +112,6 @@ const updateProperty = async (req = request, res = response) => {
       ok: true,
       Message: 'Success 🚀 update process done',
     });
-    fs.unlinkSync(path);
   } catch (error) {
     console.timeLog({ error });
     res.status(500).json({
@@ -175,7 +131,7 @@ const deleteProperty = async (req = request, res = response) => {
     if (!propertyTodelete) {
       return res.status(404).json({
         ok: false,
-        message: 'Property not found',
+        message: 'Property not found ❌',
       });
     }
 
@@ -186,7 +142,6 @@ const deleteProperty = async (req = request, res = response) => {
       });
     }
 
-    await cloudinary.uploader.destroy(propertyTodelete.cloudinary_id);
     const propertyDeleted = await Property.findByIdAndDelete(
       propertyTodelete.id
     );

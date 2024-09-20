@@ -19,7 +19,7 @@ import { useUiStore } from '../../hooks';
 import { useRef, useState } from 'react';
 
 const formSchema = z.object({
-  image: z.string().optional(),
+  image: z.instanceof(File).optional().or(z.string().optional()),
   name: z
     .string()
     .min(1, { message: 'Name is required' })
@@ -37,13 +37,12 @@ const formSchema = z.object({
 export const ProfilePage2 = () => {
   const { currentUser, startLogOut, startUpdateUser } = useUiStore();
 
-  const [prevImg, setPrevImg] = useState(currentUser.image);
+  const [prvFile, setPrvFile] = useState(currentUser.image);
 
   const initialValues = {
     image: currentUser.image,
     name: currentUser.name,
     email: currentUser.email,
-    password: currentUser.password,
   };
 
   const {
@@ -55,17 +54,28 @@ export const ProfilePage2 = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const fileRef = useRef(null);
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const tempImage = URL.createObjectURL(file);
-      setPrevImg(tempImage);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPrvFile(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
+
+  const fileRef = useRef(null);
+
   const onSubmit = (data) => {
-    startUpdateUser(data);
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('image', data.image[0]);
+    formData.append('password', data.password);
+
+    startUpdateUser(formData);
+    console.log(formData);
   };
 
   return (
@@ -83,16 +93,17 @@ export const ProfilePage2 = () => {
                 onClick={() => fileRef.current.click()}
               >
                 <Avatar className="mx-auto w-24 h-24">
-                  <AvatarImage src={prevImg} alt="Profile_img" />
+                  <AvatarImage src={prvFile} alt="Profile_img" />
                 </Avatar>
               </div>
 
               <Input
                 {...register('image')}
                 type="file"
+                accept="image/*"
                 ref={fileRef}
-                className="hidden"
                 onChange={handleImageChange}
+                className="hidden"
               />
 
               <div className="space-y-2">
@@ -108,9 +119,9 @@ export const ProfilePage2 = () => {
                   Email
                 </label>
                 <Input {...register('email')} type="email" />
-                <p>{errors.name?.message}</p>
+                <p>{errors.email?.message}</p>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 mb-4">
                 <label
                   htmlFor="password"
                   className=" text-inherit font-semibold"
@@ -118,7 +129,7 @@ export const ProfilePage2 = () => {
                   Password
                 </label>
                 <Input {...register('password')} type="password" />
-                <p>{errors.name?.message}</p>
+                <p className="text-destructive">{errors.password?.message}</p>
               </div>
 
               <div className="space-y-4 mb-6">

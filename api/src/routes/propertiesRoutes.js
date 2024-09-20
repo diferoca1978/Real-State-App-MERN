@@ -9,7 +9,6 @@ const {
 const { validateJWT } = require('../middlewares/validateJWT');
 const propertiesValidations = require('../middlewares/propertyValidations');
 const validationResults = require('../middlewares/validationsResults');
-const fileUpload = require('../helpers/multerUploader');
 
 const router = Router();
 
@@ -17,18 +16,8 @@ router.use(validateJWT); //? All routes that need Authentication must pass throu
 
 router.get('/', showAllByUserId);
 
-router.post(
-  '/create',
-  fileUpload.single('image'),
-  propertiesValidations,
-  createProperty
-);
-router.put(
-  '/update/:id',
-  fileUpload.single('image'),
-  propertiesValidations,
-  updateProperty
-);
+router.post('/create', propertiesValidations, createProperty);
+router.put('/update/:id', propertiesValidations, updateProperty);
 
 router.delete('/delete/:id', deleteProperty);
 

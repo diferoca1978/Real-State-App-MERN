@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const propertySchema = new Schema(
   {
-    propertyname: {
+    propertyName: {
       type: String,
       required: true,
       trim: true,
@@ -52,10 +52,9 @@ const propertySchema = new Schema(
       required: true,
       trim: true,
     },
-    image: {
-      type: String,
+    imageUrls: {
+      type: Array,
       required: true,
-      trim: true,
     },
     cloudinary_id: {
       type: String,
