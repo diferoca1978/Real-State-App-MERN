@@ -21,7 +21,7 @@ const userRegister = async (req = request, res = response) => {
     await newUser.save();
 
     //Generate JWT
-    const token = await generateJWT(newUser.id, newUser.name, newUser.email);
+    const token = await generateJWT(newUser.id, newUser.name, newUser.role);
 
     res.json({
       ok: true,
@@ -69,7 +69,11 @@ const userLogin = async (req, res = response) => {
 
     // GenerateJWT
 
-    const token = await generateJWT(userToLogin.id, userToLogin.name);
+    const token = await generateJWT(
+      userToLogin.id,
+      userToLogin.name,
+      userToLogin.roles
+    );
 
     res.status(200).json({
       ok: true,
@@ -118,7 +122,6 @@ const userProfile = async (req, res) => {
 
 const updateProcess = async (req, res) => {
   const userId = req.params.id;
-  const uid = req.uid;
 
   try {
     const userToupdate = await User.findById(userId);
@@ -127,13 +130,6 @@ const updateProcess = async (req, res) => {
       return res.status(404).json({
         ok: false,
         message: 'User not found ❌',
-      });
-    }
-
-    if (userToupdate._id.toString() !== uid) {
-      return res.status(403).json({
-        ok: false,
-        message: 'Unauthorized to make changes',
       });
     }
 
@@ -170,7 +166,6 @@ const updateProcess = async (req, res) => {
 
 const deleteProcess = async (req, res) => {
   const userId = req.params.id;
-  const uid = req.uid;
 
   try {
     const user = await User.findById(userId);
@@ -182,18 +177,11 @@ const deleteProcess = async (req, res) => {
       });
     }
 
-    if (uid !== userId) {
-      return res.status(403).json({
-        ok: false,
-        message: 'Unauthorized to make changes',
-      });
-    }
-
     await User.findByIdAndDelete(userId);
 
     res.json({
       ok: true,
-      message: 'Success 🚀 in delete process',
+      message: 'Success 🚀 user was deleted',
     });
   } catch (error) {
     console.log(error);
@@ -202,6 +190,14 @@ const deleteProcess = async (req, res) => {
       message: 'Delete process not implemented',
     });
   }
+};
+
+const showAllUsers = async (req, res) => {
+  const users = await User.find();
+  res.json({
+    ok: true,
+    users,
+  });
 };
 
 const renewToken = async (req, res) => {
@@ -223,5 +219,6 @@ module.exports = {
   userProfile,
   updateProcess,
   deleteProcess,
+  showAllUsers,
   renewToken,
 };
