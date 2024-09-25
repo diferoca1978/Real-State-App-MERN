@@ -44,7 +44,9 @@ export const LoginPage = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const { startLogin, errorMsg } = useUiStore();
+  const { startLogin } = useUiStore();
+  const { errorMsg } = useUiStore();
+  const { loading } = useUiStore();
 
   useEffect(() => {
     errorMsg ? toastError(errorMsg) : '';
@@ -113,7 +115,7 @@ export const LoginPage = () => {
               )}
             />
             <Button type="submit" className="w-full">
-              Sing In
+              {loading ? 'Loading...' : 'Sing In'}
               <ToastContainer transition={Zoom} />
             </Button>
 

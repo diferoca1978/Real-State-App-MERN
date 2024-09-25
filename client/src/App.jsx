@@ -1,13 +1,13 @@
+import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/AppRouter';
-import { useEffect } from 'react';
 import { useUiStore } from './hooks';
 
 function App() {
-  const { checkAuthTkn } = useUiStore();
+  const { startCheckAuthTkn } = useUiStore();
 
   useEffect(() => {
-    checkAuthTkn();
+    startCheckAuthTkn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

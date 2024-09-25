@@ -17,10 +17,10 @@ import {
 } from '../components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Menu, User, LogOut, Package2Icon } from 'lucide-react';
-import { useUiStore } from '../hooks/useUiStore';
+import { useUiStore } from '../hooks';
 
 export const NavBar = () => {
-  const { status, currentUser, startLogOut } = useUiStore();
+  const { status, currentUser, startOnLogOut } = useUiStore();
 
   return (
     <>
@@ -123,7 +123,7 @@ export const NavBar = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem className="p-1 outline-none">
                       <Button
-                        onClick={startLogOut}
+                        onClick={startOnLogOut}
                         type="button"
                         variant="ghost"
                         className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "
@@ -220,7 +220,7 @@ export const NavBar = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem className="p-1 outline-none">
                       <Button
-                        onClick={startLogOut}
+                        onClick={startOnLogOut}
                         type="button"
                         variant="ghost"
                         className="flex gap-4 p-0 font-normal hover:bg-transparent hover:text-orange-500 "

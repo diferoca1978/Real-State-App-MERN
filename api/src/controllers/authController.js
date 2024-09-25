@@ -12,7 +12,7 @@ const userRegister = async (req = request, res = response) => {
     if (userRegistered) {
       return res.status(400).json({
         ok: false,
-        message: 'Email already exists',
+        message: 'Email already in use 👾',
       });
     }
 

@@ -10,10 +10,13 @@ const realEstateApi = axios.create({
 // TODO: Configure the interceptors to get the token
 
 realEstateApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem('fhasdjkh');
+  const token = localStorage.getItem('token');
 
   if (token) {
-    config.headers['x-token'] = token;
+    config.headers = {
+      ...config.headers,
+      'x-token': token,
+    };
   }
 
   return config;

@@ -16,9 +16,9 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GoogleLogo } from '../../shared/Logo';
-import { useUiStore } from '../../hooks';
 import { toastError } from '../../helpers/toast';
 import { ToastContainer } from 'react-toastify';
+import { useUiStore } from '../../hooks';
 
 const initialValues = {
   name: '',
@@ -59,8 +59,8 @@ export const RegisterPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const onSubmit = (data) => {
-    startRegister(data);
+  const onSubmit = ({ name, email, password }) => {
+    startRegister({ name, email, password });
   };
 
   return (
